@@ -10,7 +10,7 @@ SETUP:		la a0,fundo1			# carrega o endereco do sprite 'fundo1' em a0
 		call PRINT			# imprime o sprite
 		li a3,1				# frame = 1
 		call PRINT			# imprime o sprite
-		# esse setup serve pra desenhar o "fundo1a" nos dois frames antes do "jogo" comecar
+		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 
 GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		
@@ -107,7 +107,7 @@ CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		
 
 #################################################
-#	a0 = endereço imagem			#
+#	a0 = endereÃ§o imagem			#
 #	a1 = x					#
 #	a2 = y					#
 #	a3 = frame (0 ou 1)			#
