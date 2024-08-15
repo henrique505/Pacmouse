@@ -190,21 +190,21 @@ ERASE:		# a1 = x, a2 = y
 		
 		li s1, 0 # contador de Y
 		li s2, 0 # contador de X
-		li s3, 320
+		li s3, 16
 		
 		LOOP_Y:
 		 li s2, 0                   # contador de X (colunas)
 			LOOP_X:
-				 lw t3, 0(t2)               # carrega a palavra de 4 pixels do fundo em t3
-  				 sw t3, 0(t0)               # escreve os 4 pixels no bitmap na posição antiga
-    				 addi t2, t2, 4             # incrementa o endereco da imagem (fundo)
-    				 addi t0, t0, 4             # incrementa o endereco do bitmap (posição antiga)
-    				 addi s2, s2, 4             # incrementa o contador de colunas
+				 lh t3, 0(t2)               # carrega a palavra de 4 pixels do fundo em t3
+  				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posição antiga
+    				 addi t2, t2, 1             # incrementa o endereco da imagem (fundo)
+    				 addi t0, t0, 1             # incrementa o endereco do bitmap (posição antiga)
+    				 addi s2, s2, 1             # incrementa o contador de colunas
         			 blt s2, s3, LOOP_X         # se nao alcancou o limite de pixels, repete o loop de colunas
 				
 			LOOP_X_END: 
-			   addi t0, t0, 320           # move o endereço do bitmap para a próxima linha (320 bytes)
-  			  addi t2, t2, 320           # move o ponteiro do fundo para a próxima linha
+			   addi t0, t0, 304           # move o endereço do bitmap para a próxima linha (320 bytes)
+  			  addi t2, t2, 304           # move o ponteiro do fundo para a próxima linha
     			addi s1, s1, 1             # incrementa o contador de linhas
     			blt s1, s3, LOOP_Y         # repete o loop de linhas até o limite (16 pixels)
 		LOOP_Y_END: 
