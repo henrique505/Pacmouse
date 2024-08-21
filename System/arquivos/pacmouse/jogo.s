@@ -1,14 +1,15 @@
 .data
 
-.include "./arquivos .data/levels/tile.data"
-.include "./arquivos .data/levels/fundo1.data"
+.include "./arquivos .data/levels/level1/labirinto1.data"
+.include "./arquivos .data/levels/level2/labirinto2.data"
 .include "./arquivos .data/char/char.data"
+.include "./arquivos .data/char/charD.data"
 
-CHAR_POS:	.half 0,0			# x, y
+CHAR_POS:	.half 176,208			# x, y
 OLD_CHAR_POS:	.half 0,0			# x, y
 
 .text
-SETUP:		la a0,fundo1			# carrega o endereco do sprite 'fundo1' em a0
+SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
 		li a1,0				# x = 0
 		li a2,0				# y = 0
 		li a3,0				# frame = 0
@@ -37,22 +38,6 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		li t0,0xFF200604		# carrega em t0 o endereco de troca de frame
 		sw s0,0(t0)			# mostra o sprite pronto para o usuario
 		
-		#####################################
-		# Limpeza do "rastro" do personagem #
-		#####################################
-		
-		
-		
-		#la t0,OLD_CHAR_POS		# carrega em t0 o endereco de OLD_CHAR_POS
-		
-		#la a0,tile			# carrega o endereco do sprite 'tile' em a0
-		#lh a1,0(t0)			# carrega a posicao x antiga do personagem em a1
-		#lh a2,2(t0)			# carrega a posicao y antiga do personagem em a2
-		
-		#mv a3,s0			# carrega o frame atual (que esta na tela em a3)
-		#xori a3,a3,1			# inverte a3 (0 vira 1, 1 vira 0)
-		#call PRINT			# imprime
-
 		j GAME_LOOP			# continua o loop
 
 KEY2:		li t1,0xFF200000		# carrega o endereco de controle do KDMMIO
@@ -121,7 +106,7 @@ CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		
 
 #################################################
-#	a0 = endereÃ§o imagem			#
+#	a0 = endereco imagem			#
 #	a1 = x					#
 #	a2 = y					#
 #	a3 = frame (0 ou 1)			#
@@ -171,6 +156,9 @@ PRINT_LINHA:	lw t6,0(t1)			# carrega em t6 uma word (4 pixeis) da imagem
 		
 		ret				# retorna
 
+  		#####################################
+		# Limpeza do "rastro" do personagem #
+		#####################################
 ERASE:		# a1 = x, a2 = y
 		li t0,0xFF0			# carrega 0xFF0 em t0
 		add t0,t0,a3			# adiciona o frame ao FF0 (se o frame for 1 vira FF1, se for 0 fica FF0)
@@ -183,7 +171,7 @@ ERASE:		# a1 = x, a2 = y
 		add t0,t0,t1			# adiciona t1 ao t0
 		# t0 agora é nosso endereço do ponto na tela
 		
-		la t2, fundo1
+		la t2, labirinto1
 		addi t2, t2, 8
 		# t0 é o nosso endereço, t2 é o ponteiro do fundo
 		add t2, t2, t1
@@ -195,7 +183,7 @@ ERASE:		# a1 = x, a2 = y
 		LOOP_Y:
 		 li s2, 0                   # contador de X (colunas)
 			LOOP_X:
-				 lh t3, 0(t2)               # carrega a palavra de 4 pixels do fundo em t3
+				 lh t3, 0(t2)               # carrega a halfword de 4 pixels do fundo em t3
   				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posição antiga
     				 addi t2, t2, 1             # incrementa o endereco da imagem (fundo)
     				 addi t0, t0, 1             # incrementa o endereco do bitmap (posição antiga)
