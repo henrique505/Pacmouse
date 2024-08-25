@@ -1,9 +1,41 @@
 .data
 
+#MAPAS
 .include "./arquivos .data/levels/level1/labirinto1.data"
 .include "./arquivos .data/levels/level2/labirinto2.data"
+
+#COLISAO DOS MAPAS E INIMIGOS
+.include "./arquivos .data/levels/level1/level1_coletaveis.data"
+.include "./arquivos .data/levels/level1/level1_colisao_inimigos.data"
+.include "./arquivos .data/levels/level1/level1_colisao_parede.data"
+.include "./arquivos .data/levels/level2/level2_coletaveis.data"
+.include "./arquivos .data/levels/level2/level2_colisao_inimigos.data"
+.include "./arquivos .data/levels/level2/level2_colisao_parede.data"
+
+#COLETAVEIS
+.include "./arquivos .data/collectibles/banana.data"
+.include "./arquivos .data/collectibles/coletaveis.data"
+.include "./arquivos .data/collectibles/melancia.data"
+.include "./arquivos .data/collectibles/morango.data"
+.include "./arquivos .data/collectibles/pera.data"
+.include "./arquivos .data/collectibles/queijopoderoso.data"
+#CHAR
 .include "./arquivos .data/char/char.data"
 .include "./arquivos .data/char/charD.data"
+
+#INIMIGOS
+.include "./arquivos .data/enemies/gato1A.data"
+.include "./arquivos .data/enemies/gato1D.data"
+.include "./arquivos .data/enemies/gato2A.data"
+.include "./arquivos .data/enemies/gato2D.data"
+.include "./arquivos .data/enemies/gato3A.data"
+.include "./arquivos .data/enemies/gato3D.data"
+.include "./arquivos .data/enemies/gato4A.data"
+.include "./arquivos .data/enemies/gato4D.data"
+.include "./arquivos .data/enemies/gatoassustadoA.data"
+.include "./arquivos .data/enemies/gatoassustadoD.data"
+
+
 
 CHAR_POS:	.half 176,208			# x, y
 OLD_CHAR_POS:	.half 0,0			# x, y
@@ -198,7 +230,3 @@ ERASE:		# a1 = x, a2 = y
 		LOOP_Y_END: 
 		ret 				#retorna
 		
-		
-		
-		
-
