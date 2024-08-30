@@ -1,4 +1,4 @@
-data
+.data
 
 #MAPAS
 .include "./arquivos .data/levels/level1/labirinto1.data"
