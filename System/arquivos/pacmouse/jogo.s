@@ -35,9 +35,10 @@
 .include "./arquivos .data/enemies/gatoassustadoA.data"
 .include "./arquivos .data/enemies/gatoassustadoD.data"
 
-
-CURRENT_DIR:  .half 0           # Direção atual (0 = esquerda, 1 = direita, 2 = baixo, 3 = cima)
-WANTED_DIR:   .half 0           # Direção desejada
+PONTOS:		.word 0		# pontos atuais do jogador
+HIGH: 		.word 0		# recorde do jogador
+CURRENT_DIR:  .half 0           # direcao atual (0 = esquerda, 1 = direita, 2 = baixo, 3 = cima)
+WANTED_DIR:   .half 0           # direcao desejada
 
 CHAR_POS:	.half 176,208			# x, y
 OLD_CHAR_POS:	.half 0,0			# x, y
