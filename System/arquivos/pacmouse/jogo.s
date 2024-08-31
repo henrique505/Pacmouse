@@ -51,6 +51,7 @@ SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
 		call PRINT			# imprime o sprite
 		li a3,1				# frame = 1
 		call PRINT			# imprime o sprite
+		la a0, charD 			#carrega o chaD em a0 para aparecer na tela
 		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 
 GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
@@ -58,7 +59,6 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		xori s0,s0,1			# inverte o valor frame atual (somente o registrador)
 		
 		la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
-
 
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
@@ -68,7 +68,7 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		la t0,OLD_CHAR_POS
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
-		call ERASE
+		call ERASE			# chama a label que apaga o "rastro" do char
 		
 		li t0,0xFF200604		# carrega em t0 o endereco de troca de frame
 		sw s0,0(t0)			# mostra o sprite pronto para o usuario
