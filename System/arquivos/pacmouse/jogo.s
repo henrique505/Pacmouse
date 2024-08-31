@@ -59,7 +59,7 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		
 		la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 
-		la a0,char			# carrega o endereco do sprite 'char' em a0
+
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
 		mv a3,s0			# carrega o valor do frame em a3
@@ -104,6 +104,7 @@ CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		lh t1,0(t0)			# carrega o x atual do personagem
 		addi t1,t1,-16			# decrementa 16 pixeis
 		sh t1,0(t0)			# salva
+		la a0, char                # carrega o endereco do sprite 'char' em a0
 		ret
 
 CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
@@ -111,16 +112,11 @@ CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		lw t2,0(t0)
 		sw t2,0(t1)			# salva a posicao atual do personagem em OLD_CHAR_POS
 		
-		    lh t2, 0(t0)                # carrega o x atual do personagem
-        addi t2, t2, 16             # incrementa 16 pixeis
-        sh t2, 0(t0)                # salva
-        
-        la a0, charD                # carrega o endereco do sprite 'charD' em a0
-        lh a1, 0(t0)                # carrega a posicao x do personagem em a1
-        lh a2, 2(t0)                # carrega a posicao y do personagem em a2
-        mv a3, s0                   # carrega o valor do frame em a3
-        call PRINT                  # imprime o sprite charD
-        ret
+		lh t2, 0(t0)                # carrega o x atual do personagem
+        	addi t2, t2, 16             # incrementa 16 pixeis
+        	sh t2, 0(t0)                # salva
+        	la a0, charD                # carrega o endereco do sprite 'charD' em a0
+        	ret
 
 CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
