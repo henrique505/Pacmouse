@@ -1,27 +1,13 @@
-.data
-
-#MAPAS
-.include "./arquivos .data/levels/level1/labirinto1.data"
-.include "./arquivos .data/levels/level2/labirinto2.data"
-
-#COLISAO DOS MAPAS E INIMIGOS
-.include "./arquivos .data/levels/level1/level1_coletaveis.data"
-.include "./arquivos .data/levels/level1/level1_colisao_inimigos.data"
-.include "./arquivos .data/levels/level1/level1_colisao_parede.data"
-.include "./arquivos .data/levels/level2/level2_coletaveis.data"
-.include "./arquivos .data/levels/level2/level2_colisao_inimigos.data"
-.include "./arquivos .data/levels/level2/level2_colisao_parede.data"
-
-#COLETAVEIS
-.include "./arquivos .data/collectibles/banana.data"
-.include "./arquivos .data/collectibles/coletaveis.data"
-.include "./arquivos .data/collectibles/melancia.data"
-.include "./arquivos .data/collectibles/morango.data"
 .include "./arquivos .data/collectibles/pera.data"
 .include "./arquivos .data/collectibles/queijopoderoso.data"
+
 #CHAR
 .include "./arquivos .data/char/char.data"
 .include "./arquivos .data/char/charD.data"
+#NUMEROS
+.include "./arquivos .data/numbers/um.data"
+.include "./arquivos .data/numbers/dois.data"
+.include "./arquivos .data/numbers/tres.data"
 
 #INIMIGOS
 .include "./arquivos .data/enemies/gato1A.data"
@@ -35,13 +21,22 @@
 .include "./arquivos .data/enemies/gatoassustadoA.data"
 .include "./arquivos .data/enemies/gatoassustadoD.data"
 
-PONTOS:		.word 0		# pontos atuais do jogador
-HIGH: 		.word 0		# recorde do jogador
-CURRENT_DIR:  .half 0           # direcao atual (0 = esquerda, 1 = direita, 2 = baixo, 3 = cima)
-WANTED_DIR:   .half 0           # direcao desejada
+# Define constantes para as direções
+LEFT:           .half 1         # valor da direção esquerda
+RIGHT:          .half 2         # valor da direção direita
+DOWN:           .half 3         # valor da direção baixo
+UP:             .half 4         # valor da direção cima
 
-CHAR_POS:	.half 176,208			# x, y
-OLD_CHAR_POS:	.half 0,0			# x, y
+# Dados do jogo
+PONTOS:        .word 0            # pontos atuais do jogador
+RECORDE:       .word 0            # recorde do jogador
+VIDAS:         .word 3            # vidas que o jogador tem
+VIDAS_POS:     .half 16, 208      # posição onde printar a quantidade de vidas
+CURRENT_DIR:   .half 0            # direção atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
+WANTED_DIR:    .half 0            # direção desejada
+
+CHAR_POS:      .half 176, 208     # x, y
+OLD_CHAR_POS:  .half 0, 0         # x, y
 
 .text
 SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
