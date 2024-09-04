@@ -67,33 +67,29 @@ SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
 		la a0, charD 			# carrega o chaD em a0 para aparecer na tela
 		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 
-GAME_LOOP:	
-		# Transfere a posição atual para OLD_CHAR_POS
-		la t0, CHAR_POS          # carrega o endereço de CHAR_POS
-		la t1, OLD_CHAR_POS      # carrega o endereço de OLD_CHAR_POS
-		lh t2, 0(t0)             # carrega o x atual do personagem em t2
-		lh t3, 2(t0)             # carrega o y atual do personagem em t3
-		sh t2, 0(t1)             # salva a posição x atual em OLD_CHAR_POS
-		sh t3, 2(t1)             # salva a posição y atual em OLD_CHAR_POS
+GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
+		
+		xori s0,s0,1			# inverte o valor frame atual (somente o registrador)
+		
+		la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 
-		call KEY2				# chama o procedimento de entrada do teclado
-		
-		xori s0,s0,1				# inverte o valor frame atual (somente o registrador)
-		
-		call MOVE_CHAR           	# movimenta o personagem baseado na direção desejada e na direção atual
+		lh a1,0(t0)			# carrega a posicao x do personagem em a1
+		lh a2,2(t0)			# carrega a posicao y do personagem em a2
+
+		call MOVE_CHAR           # movimenta o personagem baseado na direção desejada e na direção atual
 
 		# Verificação de coordenadas
-		li t3,48				# carrega 48 em t3
-		li t4,112				# carrega 112 em t4
+		li t3,48			# carrega 48 em t3
+		li t4,112			# carrega 112 em t4
 		beq a1,t3,CHECK_Y_48		# verifica se x == 48, se sim, vai para CHECK_Y_48
-		j CHECK_304				# se não, vai para CHECK_304
+		j CHECK_304			# se não, vai para CHECK_304
 
 CHECK_Y_48:
 		beq a2,t4,INVERT_TO_304		# verifica se y == 112, se sim, inverte para 304
 		j CONTINUE_LOOP			# se não, continua o loop
 
 CHECK_304:
-		li t3,304				# carrega 304 em t3
+		li t3,304			# carrega 304 em t3
 		beq a1,t3,CHECK_Y_304		# verifica se x == 304, se sim, vai para CHECK_Y_304
 		j CONTINUE_LOOP			# se não, continua o loop
 
@@ -101,227 +97,162 @@ CHECK_Y_304:
 		beq a2,t4,INVERT_TO_48		# verifica se y == 112, se sim, inverte para 48
 
 CONTINUE_LOOP:
-		mv a3,s0				# carrega o valor do frame em a3
-		call PRINT				# imprime o sprite
+		mv a3,s0			# carrega o valor do frame em a3
+		call PRINT			# imprime o sprite
 		
-		# Agora apagamos o rastro antigo
-		la t0,OLD_CHAR_POS		# carrega em t0 o endereço de OLD_CHAR_POS
-		lh a1,0(t0)				# carrega a posição x antiga do personagem em a1
-		lh a2,2(t0)				# carrega a posição y antiga do personagem em a2
-		call ERASE				# chama a função que apaga o "rastro" do char
+		la t0,OLD_CHAR_POS		# carrega em t0 o endereco de OLD_CHAR_POS
+		lh a1,0(t0)			# carrega a posicao x antiga do personagem em a1
+		lh a2,2(t0)			# carrega a posicao y antiga do personagem em a2
+		call ERASE			# chama a label que apaga o "rastro" do char
 		
-		li t0,0xFF200604		# carrega em t0 o endereço de troca de frame
-		sw s0,0(t0)				# mostra o sprite pronto para o usuário
+		li t0,0xFF200604		# carrega em t0 o endereco de troca de frame
+		sw s0,0(t0)			# mostra o sprite pronto para o usuario
 		
-		j GAME_LOOP				# continua o loop
+		j GAME_LOOP			# continua o loop
 
 INVERT_TO_304:
-		li a1,304			# carrega o valor 304 em a1
-		sh a1,0(t0)			# armazena 304 em t0
-		li t3,16			# carrega o valor 16 em t3
-		sub a1,a1,t3			# subtrai 16 de a1 (304 - 16)
-		sh a1,0(t0)			# armazena o valor resultante em t0 (288)
-		j CONTINUE_LOOP			# volta para CONTINUE_LOOP
+		li a1,304			# carrega 304 em a1
+		sh a1,0(t0)			# atualiza a posição x para 304
+		li t3,16			# carrega 16 em t3
+		sub a1,a1,t3			# move um quadrado para trás (304 - 16)
+		sh a1,0(t0)			# atualiza a posição x para 288
+		j CONTINUE_LOOP			# continua o loop
 
 INVERT_TO_48:
-		li a1,48			# carrega o valor 48 em a1
-		sh a1,0(t0)			# armazena 48 em t0
-		li t3,16			# carrega o valor 16 em t3
-		add a1,a1,t3			# adiciona 16 a a1 (48 + 16)
-		sh a1,0(t0)			# armazena o valor resultante em t0 (64)
-		j CONTINUE_LOOP			# volta para CONTINUE_LOOP
-
-KEY2:	
-        li t1, 0xFF200000        # carrega o endereco de controle do KDMMIO em t1
-		lw t0, 0(t1)             # le o valor do bit de controle do teclado em t0
-		andi t0, t0, 0x0001  	    # mascara o bit menos significativo em t0
-   		beq t0, zero, MOVE_CHAR   # se t0 for zero, vai para MOVE_CHAR
-
-  		lw t2, 4(t1)             # le o valor da tecla pressionada em t2.data
-#MAPAS
-.include "./arquivos .data/levels/level1/labirinto1hud.data"
-.include "./arquivos .data/levels/level2/labirinto2hud.data"
-
-#COLISAO DOS MAPAS, COLETAVEIS E INIMIGOS
-.include "./arquivos .data/levels/level1/level1_coletaveis.data"
-.include "./arquivos .data/levels/level1/level1_colisao_inimigos.data"
-.include "./arquivos .data/levels/level1/level1_colisao_parede.data"
-.include "./arquivos .data/levels/level2/level2_coletaveis.data"
-.include "./arquivos .data/levels/level2/level2_colisao_inimigos.data"
-.include "./arquivos .data/levels/level2/level2_colisao_parede.data"
-
-#COLETAVEIS
-.include "./arquivos .data/collectibles/banana.data"
-.include "./arquivos .data/collectibles/coletaveis.data"
-.include "./arquivos .data/collectibles/melancia.data"
-.include "./arquivos .data/collectibles/morango.data"
-.include "./arquivos .data/collectibles/pera.data"
-.include "./arquivos .data/collectibles/queijopoderoso.data"
-
-#CHAR
-.include "./arquivos .data/char/char.data"
-.include "./arquivos .data/char/charD.data"
-#NUMEROS
-.include "./arquivos .data/numbers/um.data"
-.include "./arquivos .data/numbers/dois.data"
-.include "./arquivos .data/numbers/tres.data"
-
-#INIMIGOS
-.include "./arquivos .data/enemies/gato1A.data"
-.include "./arquivos .data/enemies/gato1D.data"
-.include "./arquivos .data/enemies/gato2A.data"
-.include "./arquivos .data/enemies/gato2D.data"
-.include "./arquivos .data/enemies/gato3A.data"
-.include "./arquivos .data/enemies/gato3D.data"
-.include "./arquivos .data/enemies/gato4A.data"
-.include "./arquivos .data/enemies/gato4D.data"
-.include "./arquivos .data/enemies/gatoassustadoA.data"
-.include "./arquivos .data/enemies/gatoassustadoD.data"
-
-# Define constantes para as direções
-LEFT:           .half 1         # valor da direção esquerda
-RIGHT:          .half 2         # valor da direção direita
-DOWN:           .half 3         # valor da direção baixo
-UP:             .half 4         # valor da direção cima
-
-# Dados do jogo
-PONTOS:        .word 0            # pontos atuais do jogador
-RECORDE:       .word 0            # recorde do jogador
-VIDAS:         .word 3            # vidas que o jogador tem
-VIDAS_POS:     .half 16, 208      # posição onde printar a quantidade de vidas
-CURRENT_DIR:   .half 0            # direção atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
-WANTED_DIR:    .half 0            # direção desejada
-
-CHAR_POS:      .half 176, 208     # x, y
-OLD_CHAR_POS:  .half 0, 0         # x, y
-
-.text
-SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
-		li a1,0				# x = 0
-		li a2,0				# y = 0
-		li a3,0				# frame = 0
-		call PRINT			# imprime o sprite
-
-
-		li t0, 'w'               # carrega o caractere 'w' em t0
-		beq t2, t0, SET_WANTED_UP	# se t2 for igual a 'w', vai para SET_WANTED_UP
-
-		li t0, 'a'               # carrega o caractere 'a' em t0
-		beq t2, t0, SET_WANTED_LEFT	# se t2 for igual a 'a', vai para SET_WANTED_LEFT
-
-		li t0, 's'               # carrega o caractere 's' em t0
-		beq t2, t0, SET_WANTED_DOWN	# se t2 for igual a 's', vai para SET_WANTED_DOWN
-
-		li t0, 'd'               # carrega o caractere 'd' em t0
-		beq t2, t0, SET_WANTED_RIGHT	# se t2 for igual a 'd', vai para SET_WANTED_RIGHT
-	
-FIM:	
-        ret                      # retorna da funcao
-
-SET_WANTED_LEFT:	
-        la t4, LEFT              # carrega o endereco de LEFT em t4
-		la t5, WANTED_DIR		# carrega o endereco de WANTED_DIR em t5
-		sh t4, 0(t5)			# armazena o endereco de LEFT em WANTED_DIR
-		ret				# retorna da funcao
-
-SET_WANTED_RIGHT:	
-        la t4, RIGHT             # carrega o endereco de RIGHT em t4
-		la t5, WANTED_DIR		# carrega o endereco de WANTED_DIR em t5
-		sh t4, 0(t5)			# armazena o endereco de RIGHT em WANTED_DIR
-		ret				# retorna da funcao
-
-SET_WANTED_DOWN:	
-        la t4, DOWN              # carrega o endereco de DOWN em t4
-		la t5, WANTED_DIR		# carrega o endereco de WANTED_DIR em t5
-		sh t4, 0(t5)			# armazena o endereco de DOWN em WANTED_DIR
-		ret				# retorna da funcao
-
-SET_WANTED_UP:	
-        la t4, UP                # carrega o endereco de UP em t4
-		la t5, WANTED_DIR		# carrega o endereco de WANTED_DIR em t5
-		sh t4, 0(t5)			# armazena o endereco de UP em WANTED_DIR
-		ret				# retorna da funcao
-		
+		li a1,48			# carrega 48 em a1
+		sh a1,0(t0)			# atualiza a posição x para 48
+		li t3,16			# carrega 16 em t3
+		add a1,a1,t3			# move um quadrado para frente (48 + 16)
+		sh a1,0(t0)			# atualiza a posição x para 64
+		j CONTINUE_LOOP			# continua o loop
 
 MOVE_CHAR:	
-        la t0, CHAR_POS          # carrega o endereco de CHAR_POS em t0
-		la t1, OLD_CHAR_POS      # carrega o endereco de OLD_CHAR_POS em t1
-		lh t2, 0(t0)             # carrega o valor atual de x do personagem em t2
-		lh t3, 2(t0)             # carrega o valor atual de y do personagem em t3
+        la t0, CHAR_POS          # carrega o endereço de CHAR_POS
+		la t1, OLD_CHAR_POS      # carrega o endereço de OLD_CHAR_POS
+		lh t2, 0(t0)             # carrega o x atual do personagem em t2
+		lh t3, 2(t0)             # carrega o y atual do personagem em t3
 
-		sh t2, 0(t1)             # armazena o valor de x atual em OLD_CHAR_POS
-		sh t3, 2(t1)             # armazena o valor de y atual em OLD_CHAR_POS
+		sw t2, 0(t1)             # salva a posição x atual em OLD_CHAR_POS
+		sw t3, 2(t1)             # salva a posição y atual em OLD_CHAR_POS
 
-		la t4, WANTED_DIR		# carrega o endereco de WANTED_DIR em t4
-		lh t4, 0(t4)             # carrega a direcao desejada em t4
+		# Verifica se é possível mudar para a direção desejada
+		la t4, WANTED_DIR
+		lh t4, 0(t4)             # carrega a direção desejada em t4
 
-		la t5, LEFT			# carrega o endereco de LEFT em t5
-		beq t4, t5, TRY_LEFT		# se WANTED_DIR for LEFT, vai para TRY_LEFT
-		la t5, RIGHT			# carrega o endereco de RIGHT em t5
-		beq t4, t5, TRY_RIGHT		# se WANTED_DIR for RIGHT, vai para TRY_RIGHT
-		la t5, DOWN			# carrega o endereco de DOWN em t5
-		beq t4, t5, TRY_DOWN		# se WANTED_DIR for DOWN, vai para TRY_DOWN
-		la t5, UP			# carrega o endereco de UP em t5
-		beq t4, t5, TRY_UP		# se WANTED_DIR for UP, vai para TRY_UP
-		j CONTINUE_MOVE			# se nao, vai para CONTINUE_MOVE
+		la t5, LEFT
+		beq t4, t5, TRY_LEFT
+		la t5, RIGHT
+		beq t4, t5, TRY_RIGHT
+		la t5, DOWN
+		beq t4, t5, TRY_DOWN
+		la t5, UP
+		beq t4, t5, TRY_UP
+		j CONTINUE_MOVE
 
 TRY_LEFT:	
-        addi t2, t2, -16         # decrementa 16 de x (move para esquerda)
-		j CHECK_COLLISION		# vai para CHECK_COLLISION
+        addi t2, t2, -16         # decrementa x
+		j CHECK_COLLISION
 
 TRY_RIGHT:	
-        addi t2, t2, 16          # incrementa 16 em x (move para direita)
-		j CHECK_COLLISION		# vai para CHECK_COLLISION
+        addi t2, t2, 16          # incrementa x
+		j CHECK_COLLISION
 
 TRY_DOWN:	
-        addi t3, t3, 16          # incrementa 16 em y (move para baixo)
-		j CHECK_COLLISION		# vai para CHECK_COLLISION
+        addi t3, t3, 16          # incrementa y
+		j CHECK_COLLISION
 
 TRY_UP:	
-        addi t3, t3, -16         # decrementa 16 de y (move para cima)
-		j CHECK_COLLISION		# vai para CHECK_COLLISION
+        addi t3, t3, -16         # decrementa y
+		j CHECK_COLLISION
 
 CHECK_COLLISION: 
-		la t5, CURRENT_DIR		# carrega o endereco de CURRENT_DIR em t5
-		sh t4, 0(t5)             # armazena a direcao desejada em CURRENT_DIR
-		j CONTINUE_MOVE			# vai para CONTINUE_MOVE
+		# Aqui deveria haver uma verificação de colisão
+		# Supondo que não haja colisão:
+		la t5, CURRENT_DIR
+		sh t4, 0(t5)             # Atualiza CURRENT_DIR para WANTED_DIR
+		j UPDATE_POSITION
 
 CONTINUE_MOVE:	
-        la t4, CURRENT_DIR		# carrega o endereco de CURRENT_DIR em t4
-		lh t4, 0(t4)             # carrega a direcao atual em t4
+        la t4, CURRENT_DIR
+		lh t4, 0(t4)             # Carrega a direção atual em t4
 
-		la t5, LEFT			# carrega o endereco de LEFT em t5
-		beq t4, t5, MOVE_LEFT		# se CURRENT_DIR for LEFT, vai para MOVE_LEFT
-		la t5, RIGHT			# carrega o endereco de RIGHT em t5
-		beq t4, t5, MOVE_RIGHT		# se CURRENT_DIR for RIGHT, vai para MOVE_RIGHT
-		la t5, DOWN			# carrega o endereco de DOWN em t5
-		beq t4, t5, MOVE_DOWN		# se CURRENT_DIR for DOWN, vai para MOVE_DOWN
-		la t5, UP			# carrega o endereco de UP em t5
-		beq t4, t5, MOVE_UP		# se CURRENT_DIR for UP, vai para MOVE_UP
-		ret				# retorna da funcao
+		la t5, LEFT
+		beq t4, t5, MOVE_LEFT
+		la t5, RIGHT
+		beq t4, t5, MOVE_RIGHT
+		la t5, DOWN
+		beq t4, t5, MOVE_DOWN
+		la t5, UP
+		beq t4, t5, MOVE_UP
+		ret
 
 MOVE_LEFT:	
-        addi t2, t2, -16         # decrementa 16 de x (move para esquerda)
-		j UPDATE_POSITION		# vai para UPDATE_POSITION
+        addi t2, t2, -16         # move para a esquerda
+		j UPDATE_POSITION
 
 MOVE_RIGHT:	
-        addi t2, t2, 16          # incrementa 16 em x (move para direita)
-		j UPDATE_POSITION		# vai para UPDATE_POSITION
+        addi t2, t2, 16          # move para a direita
+		j UPDATE_POSITION
 
 MOVE_DOWN:	
-        addi t3, t3, 16          # incrementa 16 em y (move para baixo)
-		j UPDATE_POSITION		# vai para UPDATE_POSITION
+        addi t3, t3, 16          # move para baixo
+		j UPDATE_POSITION
 
 MOVE_UP:	
-        addi t3, t3, -16         # decrementa 16 de y (move para cima)
-		j UPDATE_POSITION		# vai para UPDATE_POSITION
+        addi t3, t3, -16         # move para cima
+		j UPDATE_POSITION
 
 UPDATE_POSITION:	
-        	sh t2, 0(t0)             # atualiza a nova posicao x em CHAR_POS
-		sh t3, 2(t0)             # atualiza a nova posicao y em CHAR_POS
-		j CONTINUE_LOOP		# volta para CONTINUE_LOOP
+        sh t2, 0(t0)             # atualiza a nova posição x em CHAR_POS
+		sh t3, 2(t0)             # atualiza a nova posição y em CHAR_POS
+		ret
 
+KEY2:	
+        li t1, 0xFF200000        # carrega o endereço de controle do KDMMIO
+		lw t0, 0(t1)             # lê o bit de controle do teclado
+		andi t0, t0, 0x0001      # mascara o bit menos significativo
+   		beq t0, zero, FIM   # se não há tecla pressionada, vai para FIM
 
+  		lw t2, 4(t1)             # lê o valor da tecla pressionada
+
+		li t0, 'w'               # carrega 'w' em t0
+		beq t2, t0, SET_WANTED_UP
+
+		li t0, 'a'               # carrega 'a' em t0
+		beq t2, t0, SET_WANTED_LEFT
+
+		li t0, 's'               # carrega 's' em t0
+		beq t2, t0, SET_WANTED_DOWN
+
+		li t0, 'd'               # carrega 'd' em t0
+		beq t2, t0, SET_WANTED_RIGHT
+	
+FIM:	
+        ret                      # retorna
+
+SET_WANTED_LEFT:	
+        la t4, LEFT              # define WANTED_DIR para esquerda
+		la t5, WANTED_DIR
+		sh t4, 0(t5)
+		ret
+
+SET_WANTED_RIGHT:	
+        la t4, RIGHT             # define WANTED_DIR para direita
+		la t5, WANTED_DIR
+		sh t4, 0(t5)
+		ret
+
+SET_WANTED_DOWN:	
+        la t4, DOWN              # define WANTED_DIR para baixo
+		la t5, WANTED_DIR
+		sh t4, 0(t5)
+		ret
+
+SET_WANTED_UP:	
+        la t4, UP                # define WANTED_DIR para cima
+		la t5, WANTED_DIR
+		sh t4, 0(t5)
+		ret
 
 #################################################
 #	a0 = endereço imagem			#
