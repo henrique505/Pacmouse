@@ -1,3 +1,21 @@
+.data
+#MAPAS
+.include "./arquivos .data/levels/level1/labirinto1hud.data"
+.include "./arquivos .data/levels/level2/labirinto2hud.data"
+
+#COLISAO DOS MAPAS, COLETAVEIS E INIMIGOS
+.include "./arquivos .data/levels/level1/level1_coletaveis.data"
+.include "./arquivos .data/levels/level1/level1_colisao_inimigos.data"
+.include "./arquivos .data/levels/level1/level1_colisao_parede.data"
+.include "./arquivos .data/levels/level2/level2_coletaveis.data"
+.include "./arquivos .data/levels/level2/level2_colisao_inimigos.data"
+.include "./arquivos .data/levels/level2/level2_colisao_parede.data"
+
+#COLETAVEIS
+.include "./arquivos .data/collectibles/banana.data"
+.include "./arquivos .data/collectibles/coletaveis.data"
+.include "./arquivos .data/collectibles/melancia.data"
+.include "./arquivos .data/collectibles/morango.data"
 .include "./arquivos .data/collectibles/pera.data"
 .include "./arquivos .data/collectibles/queijopoderoso.data"
 
