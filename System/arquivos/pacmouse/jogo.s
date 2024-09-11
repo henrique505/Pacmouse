@@ -64,7 +64,7 @@ SETUP:		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
 		call PRINT			# imprime o sprite
 		li a3,1				# frame = 1
 		call PRINT			# imprime o sprite
-		la a0, charD 			# carrega o chaD em a0 para aparecer na tela
+		la a0, charD 			#carrega o chaD em a0 para aparecer na tela
 		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 
 GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
@@ -75,8 +75,6 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
-
-		call MOVE_CHAR           # movimenta o personagem baseado na direção desejada e na direção atual
 
 		# Verificação de coordenadas
 		li t3,48			# carrega 48 em t3
@@ -110,7 +108,7 @@ CONTINUE_LOOP:
 		
 		j GAME_LOOP			# continua o loop
 
-INVERT_TO_304:
+		INVERT_TO_304:
 		li a1,304			# carrega 304 em a1
 		sh a1,0(t0)			# atualiza a posição x para 304
 		li t3,16			# carrega 16 em t3
@@ -118,7 +116,7 @@ INVERT_TO_304:
 		sh a1,0(t0)			# atualiza a posição x para 288
 		j CONTINUE_LOOP			# continua o loop
 
-INVERT_TO_48:
+		INVERT_TO_48:
 		li a1,48			# carrega 48 em a1
 		sh a1,0(t0)			# atualiza a posição x para 48
 		li t3,16			# carrega 16 em t3
@@ -126,142 +124,80 @@ INVERT_TO_48:
 		sh a1,0(t0)			# atualiza a posição x para 64
 		j CONTINUE_LOOP			# continua o loop
 
-MOVE_CHAR:	
-        la t0, CHAR_POS          # carrega o endereço de CHAR_POS
-		la t1, OLD_CHAR_POS      # carrega o endereço de OLD_CHAR_POS
-		lh t2, 0(t0)             # carrega o x atual do personagem em t2
-		lh t3, 2(t0)             # carrega o y atual do personagem em t3
-
-		sw t2, 0(t1)             # salva a posição x atual em OLD_CHAR_POS
-		sw t3, 2(t1)             # salva a posição y atual em OLD_CHAR_POS
-
-		# Verifica se é possível mudar para a direção desejada
-		la t4, WANTED_DIR
-		lh t4, 0(t4)             # carrega a direção desejada em t4
-
-		la t5, LEFT
-		beq t4, t5, TRY_LEFT
-		la t5, RIGHT
-		beq t4, t5, TRY_RIGHT
-		la t5, DOWN
-		beq t4, t5, TRY_DOWN
-		la t5, UP
-		beq t4, t5, TRY_UP
-		j CONTINUE_MOVE
-
-TRY_LEFT:	
-        addi t2, t2, -16         # decrementa x
-		j CHECK_COLLISION
-
-TRY_RIGHT:	
-        addi t2, t2, 16          # incrementa x
-		j CHECK_COLLISION
-
-TRY_DOWN:	
-        addi t3, t3, 16          # incrementa y
-		j CHECK_COLLISION
-
-TRY_UP:	
-        addi t3, t3, -16         # decrementa y
-		j CHECK_COLLISION
-
-CHECK_COLLISION: 
-		# Aqui deveria haver uma verificação de colisão
-		# Supondo que não haja colisão:
-		la t5, CURRENT_DIR
-		sh t4, 0(t5)             # Atualiza CURRENT_DIR para WANTED_DIR
-		j UPDATE_POSITION
-
-CONTINUE_MOVE:	
-        la t4, CURRENT_DIR
-		lh t4, 0(t4)             # Carrega a direção atual em t4
-
-		la t5, LEFT
-		beq t4, t5, MOVE_LEFT
-		la t5, RIGHT
-		beq t4, t5, MOVE_RIGHT
-		la t5, DOWN
-		beq t4, t5, MOVE_DOWN
-		la t5, UP
-		beq t4, t5, MOVE_UP
-		ret
-
-MOVE_LEFT:	
-        addi t2, t2, -16         # move para a esquerda
-		j UPDATE_POSITION
-
-MOVE_RIGHT:	
-        addi t2, t2, 16          # move para a direita
-		j UPDATE_POSITION
-
-MOVE_DOWN:	
-        addi t3, t3, 16          # move para baixo
-		j UPDATE_POSITION
-
-MOVE_UP:	
-        addi t3, t3, -16         # move para cima
-		j UPDATE_POSITION
-
-UPDATE_POSITION:	
-        sh t2, 0(t0)             # atualiza a nova posição x em CHAR_POS
-		sh t3, 2(t0)             # atualiza a nova posição y em CHAR_POS
-		ret
-
-KEY2:	
-        li t1, 0xFF200000        # carrega o endereço de controle do KDMMIO
-		lw t0, 0(t1)             # lê o bit de controle do teclado
-		andi t0, t0, 0x0001      # mascara o bit menos significativo
-   		beq t0, zero, FIM   # se não há tecla pressionada, vai para FIM
-
-  		lw t2, 4(t1)             # lê o valor da tecla pressionada
-
-		li t0, 'w'               # carrega 'w' em t0
-		beq t2, t0, SET_WANTED_UP
-
-		li t0, 'a'               # carrega 'a' em t0
-		beq t2, t0, SET_WANTED_LEFT
-
-		li t0, 's'               # carrega 's' em t0
-		beq t2, t0, SET_WANTED_DOWN
-
-		li t0, 'd'               # carrega 'd' em t0
-		beq t2, t0, SET_WANTED_RIGHT
+KEY2:		li t1,0xFF200000		# carrega o endereco de controle do KDMMIO
+		lw t0,0(t1)			# lê o bit de controle do teclado
+		andi t0,t0,0x0001		# mascara o bit menos significativo
+   		beq t0,zero,FIM   		# se não há tecla pressionada, vai para FIM
+  		
+  		lw t2,4(t1)  			# lê o valor da tecla pressionada
+		
+		li t0,'w'			# carrega 'w' em t0
+		beq t2,t0,CHAR_CIMA		# se tecla pressionada for 'w', chama CHAR_CIMA
+		
+		li t0,'a'			# carrega 'a' em t0
+		beq t2,t0,CHAR_ESQ		# se tecla pressionada for 'a', chama CHAR_ESQ
+		
+		li t0,'s'			# carrega 's' em t0
+		beq t2,t0,CHAR_BAIXO		# se tecla pressionada for 's', chama CHAR_BAIXO
+		
+		li t0,'d'			# carrega 'd' em t0
+		beq t2,t0,CHAR_DIR		# se tecla pressionada for 'd', chama CHAR_DIR
 	
-FIM:	
-        ret                      # retorna
+FIM:		ret				# retorna
 
-SET_WANTED_LEFT:	
-        la t4, LEFT              # define WANTED_DIR para esquerda
-		la t5, WANTED_DIR
-		sh t4, 0(t5)
-		ret
+CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posição atual do personagem em t2
+		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		
+		lh t1,0(t0)			# carrega o x atual do personagem
+		addi t1,t1,-16			# decrementa 16 pixels
+		sh t1,0(t0)			# salva a nova posição x em CHAR_POS
+		la a0, char			# carrega o endereco do sprite 'char' em a0
+		ret				# retorna
 
-SET_WANTED_RIGHT:	
-        la t4, RIGHT             # define WANTED_DIR para direita
-		la t5, WANTED_DIR
-		sh t4, 0(t5)
-		ret
+CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posição atual do personagem em t2
+		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		
+		lh t2, 0(t0)                # carrega o x atual do personagem
+        	addi t2, t2, 16             # incrementa 16 pixels
+        	sh t2, 0(t0)                # salva a nova posição x em CHAR_POS
+        	la a0, charD                # carrega o endereco do sprite 'charD' em a0
+        	ret				# retorna
 
-SET_WANTED_DOWN:	
-        la t4, DOWN              # define WANTED_DIR para baixo
-		la t5, WANTED_DIR
-		sh t4, 0(t5)
-		ret
+CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posição atual do personagem em t2
+		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		
+		la t0,CHAR_POS
+		lh t1,2(t0)			# carrega o y atual do personagem
+		addi t1,t1,-16			# decrementa 16 pixels
+		sh t1,2(t0)			# salva a nova posição y em CHAR_POS
+		ret				# retorna
 
-SET_WANTED_UP:	
-        la t4, UP                # define WANTED_DIR para cima
-		la t5, WANTED_DIR
-		sh t4, 0(t5)
-		ret
+CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
+		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posição atual do personagem em t2
+		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		
+		la t0,CHAR_POS
+		lh t1,2(t0)			# carrega o y atual do personagem
+		addi t1,t1,16			# incrementa 16 pixels
+		sh t1,2(t0)			# salva a nova posição y em CHAR_POS
+		ret				# retorna
+		
 
 #################################################
-#	a0 = endereço imagem			#
+#	a0 = endereco imagem			#
 #	a1 = x					#
 #	a2 = y					#
 #	a3 = frame (0 ou 1)			#
 #################################################
-#	t0 = endereço do bitmap display		#
-#	t1 = endereço da imagem			#
+#	t0 = endereco do bitmap display		#
+#	t1 = endereco da imagem			#
 #	t2 = contador de linha			#
 # 	t3 = contador de coluna			#
 #	t4 = largura				#
@@ -289,15 +225,15 @@ PRINT:		li t0,0xFF0			# carrega 0xFF0 em t0
 PRINT_LINHA:	lw t6,0(t1)			# carrega em t6 uma word (4 pixels) da imagem
 		sw t6,0(t0)			# imprime no bitmap a word (4 pixels) da imagem
 		
-		addi t0,t0,4			# incrementa endereço do bitmap
-		addi t1,t1,4			# incrementa endereço da imagem
+		addi t0,t0,4			# incrementa endereco do bitmap
+		addi t1,t1,4			# incrementa endereco da imagem
 		
 		addi t3,t3,4			# incrementa contador de coluna
 		blt t3,t4,PRINT_LINHA		# se contador da coluna < largura, continue imprimindo
 
 		addi t0,t0,320			# t0 += 320
 		sub t0,t0,t4			# t0 -= largura da imagem
-		# isso serve pra "pular" de linha no bitmap display
+		#  isso serve pra "pular" de linha no bitmap display
 		
 		mv t3,zero			# zera t3 (contador de coluna)
 		addi t2,t2,1			# incrementa contador de linha
