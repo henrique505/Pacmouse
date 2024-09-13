@@ -1,7 +1,7 @@
 .data
 
 #MUSICA
-.include "./arquivos .data/musica/dererlkonig.data"
+.include "./arquivos .data/musica/der_erlkonig.data"
 
 #MAPAS
 .include "./arquivos .data/levels/level1/labirinto1hud.data"
