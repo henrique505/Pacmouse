@@ -43,26 +43,26 @@
 .include "./arquivos .data/enemies/gatoassustadoA.data"
 .include "./arquivos .data/enemies/gatoassustadoD.data"
 
-# Define constantes para as direções
-LEFT:           .half 1         # valor da direção esquerda
-RIGHT:          .half 2         # valor da direção direita
-DOWN:           .half 3         # valor da direção baixo
-UP:             .half 4         # valor da direção cima
+# Define constantes para as direÃ§Ãµes
+LEFT:           .half 1         # valor da direÃ§Ã£o esquerda
+RIGHT:          .half 2         # valor da direÃ§Ã£o direita
+DOWN:           .half 3         # valor da direÃ§Ã£o baixo
+UP:             .half 4         # valor da direÃ§Ã£o cima
 
 # Dados do jogo
 PONTOS:        .word 0            # pontos atuais do jogador
 RECORDE:       .word 0            # recorde do jogador
 VIDAS:         .word 3            # vidas que o jogador tem
-VIDAS_POS:     .half 16, 208      # posição onde printar a quantidade de vidas
-CURRENT_DIR:   .half 0            # direção atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
-WANTED_DIR:    .half 0            # direção desejada
+VIDAS_POS:     .half 16, 208      # posiÃ§Ã£o onde printar a quantidade de vidas
+CURRENT_DIR:   .half 0            # direÃ§Ã£o atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
+WANTED_DIR:    .half 0            # direÃ§Ã£o desejada
 
 CHAR_POS:      .half 176, 208     # x, y
 OLD_CHAR_POS:  .half 0, 0         # x, y
 
 # Dados musica
 Tamanho:			# Quantas notas serao tocadas
-.word 365
+.word 1000
 Notas:				# Array com o tom de cada nota
 .space 4096
 Duracao:			# Array com a duracao de cada nota correspondente
@@ -75,12 +75,23 @@ Fim:				# Define quando a nota deve parar de tocar
 	
 .text
 SETUP:	
+			
+		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
+		li a1,0				# x = 0
+		li a2,0				# y = 0
+		li a3,0				# frame = 0
+		call PRINT			# imprime o sprite
+		li a3,1				# frame = 1
+		call PRINT			# imprime o sprite
+		la a0, charD 			#carrega o chaD em a0 para aparecer na tela
+		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
+		
+		# armazena em 'Fim' a quantidade de milissegundos atual
+		li a7, 30
+		ecall
+		sw a0, Fim, t0
 
-	# inicia o tempo atual
-	li	a7, 30
-	ecall
-	sw	a0, Fim, t0
-	
+GAME_LOOP:	
 	MUSICA:	
 		FIM_NOTA:				# checa se a nota chegou ao fim
 		li a7, 30				
@@ -91,6 +102,8 @@ SETUP:
 		TOCA_NOTA:
 		# carregar as informacoes do aquivo na memoria
 		lw	t4, Tamanho		# quantas notas tem a musica
+		li 	t0, 4			# carrega 4 em t0
+		mul 	t4, t4, t0		# multiplica o tamanho por 4, por se tratar de uma word
 		lw	t0, NotaAtual		# ponteiro para as notas e duracoes
 		la	t1, Notas		# carrega o endereco das notas em t1
 		la	t2, Duracao		# carrega o endereco das duracoes em t2
@@ -115,11 +128,11 @@ SETUP:
 		ecall
 		
 		# calcular quando eh o fim da nota que esta tocando
-		add	t6, a0, t2 			# t6 é o começo da nota + duracao
+		add	t6, a0, t2 			# t6 Ã© o comeÃ§o da nota + duracao
 		sw 	t6, Fim, s2			# armazena o valor em Fim	
 			
 		lw	s0, NotaAtual		# s0 eh como um contador para a nota atual
-		addi	s0, s0, 1		# incrementa 1 no contador (para ir à próxima)
+		addi	s0, s0, 4		# incrementa 1 no contador (para ir Ã  prÃ³xima)
 		bge	s0, t4, loop		# se a musica terminou, volta pro inicio
 		j	jogo
 		loop:
@@ -127,19 +140,8 @@ SETUP:
 		jogo:
 			sw	s0, NotaAtual, s1	# novo valor no ponteiro para o arquivo na memoria
 		
-		NAO_ACABOU:
-		
-		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
-		li a1,0				# x = 0
-		li a2,0				# y = 0
-		li a3,0				# frame = 0
-		call PRINT			# imprime o sprite
-		li a3,1				# frame = 1
-		call PRINT			# imprime o sprite
-		la a0, charD 			#carrega o chaD em a0 para aparecer na tela
-		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
-
-GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
+	NAO_ACABOU:
+		call KEY2			# chama o procedimento de entrada do teclado
 		
 		xori s0,s0,1			# inverte o valor frame atual (somente o registrador)
 		
@@ -148,25 +150,7 @@ GAME_LOOP:	call KEY2			# chama o procedimento de entrada do teclado
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
 
-		# Verificação de coordenadas
-		li t3,48			# carrega 48 em t3
-		li t4,112			# carrega 112 em t4
-		beq a1,t3,CHECK_Y_48		# verifica se x == 48, se sim, vai para CHECK_Y_48
-		j CHECK_304			# se não, vai para CHECK_304
 
-CHECK_Y_48:
-		beq a2,t4,INVERT_TO_304		# verifica se y == 112, se sim, inverte para 304
-		j CONTINUE_LOOP			# se não, continua o loop
-
-CHECK_304:
-		li t3,304			# carrega 304 em t3
-		beq a1,t3,CHECK_Y_304		# verifica se x == 304, se sim, vai para CHECK_Y_304
-		j CONTINUE_LOOP			# se não, continua o loop
-
-CHECK_Y_304:
-		beq a2,t4,INVERT_TO_48		# verifica se y == 112, se sim, inverte para 48
-
-CONTINUE_LOOP:
 		mv a3,s0			# carrega o valor do frame em a3
 		call PRINT			# imprime o sprite
 		
@@ -180,28 +164,12 @@ CONTINUE_LOOP:
 		
 		j GAME_LOOP			# continua o loop
 
-		INVERT_TO_304:
-		li a1,304			# carrega 304 em a1
-		sh a1,0(t0)			# atualiza a posição x para 304
-		li t3,16			# carrega 16 em t3
-		sub a1,a1,t3			# move um quadrado para trás (304 - 16)
-		sh a1,0(t0)			# atualiza a posição x para 288
-		j CONTINUE_LOOP			# continua o loop
-
-		INVERT_TO_48:
-		li a1,48			# carrega 48 em a1
-		sh a1,0(t0)			# atualiza a posição x para 48
-		li t3,16			# carrega 16 em t3
-		add a1,a1,t3			# move um quadrado para frente (48 + 16)
-		sh a1,0(t0)			# atualiza a posição x para 64
-		j CONTINUE_LOOP			# continua o loop
-
 KEY2:		li t1,0xFF200000		# carrega o endereco de controle do KDMMIO
-		lw t0,0(t1)			# lê o bit de controle do teclado
+		lw t0,0(t1)			# lÃª o bit de controle do teclado
 		andi t0,t0,0x0001		# mascara o bit menos significativo
-   		beq t0,zero,FIM   		# se não há tecla pressionada, vai para FIM
+   		beq t0,zero,FIM   		# se nÃ£o hÃ¡ tecla pressionada, vai para FIM
   		
-  		lw t2,4(t1)  			# lê o valor da tecla pressionada
+  		lw t2,4(t1)  			# lÃª o valor da tecla pressionada
 		
 		li t0,'w'			# carrega 'w' em t0
 		beq t2,t0,CHAR_CIMA		# se tecla pressionada for 'w', chama CHAR_CIMA
@@ -219,46 +187,46 @@ FIM:		ret				# retorna
 
 CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posição atual do personagem em t2
-		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
+		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
 		
 		lh t1,0(t0)			# carrega o x atual do personagem
 		addi t1,t1,-16			# decrementa 16 pixels
-		sh t1,0(t0)			# salva a nova posição x em CHAR_POS
+		sh t1,0(t0)			# salva a nova posiÃ§Ã£o x em CHAR_POS
 		la a0, char			# carrega o endereco do sprite 'char' em a0
 		ret				# retorna
 
 CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posição atual do personagem em t2
-		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
+		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
 		
 		lh t2, 0(t0)                # carrega o x atual do personagem
         	addi t2, t2, 16             # incrementa 16 pixels
-        	sh t2, 0(t0)                # salva a nova posição x em CHAR_POS
+        	sh t2, 0(t0)                # salva a nova posiÃ§Ã£o x em CHAR_POS
         	la a0, charD                # carrega o endereco do sprite 'charD' em a0
         	ret				# retorna
 
 CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posição atual do personagem em t2
-		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
+		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
 		addi t1,t1,-16			# decrementa 16 pixels
-		sh t1,2(t0)			# salva a nova posição y em CHAR_POS
+		sh t1,2(t0)			# salva a nova posiÃ§Ã£o y em CHAR_POS
 		ret				# retorna
 
 CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posição atual do personagem em t2
-		sw t2,0(t1)			# salva a posição atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
+		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
 		addi t1,t1,16			# incrementa 16 pixels
-		sh t1,2(t0)			# salva a nova posição y em CHAR_POS
+		sh t1,2(t0)			# salva a nova posiÃ§Ã£o y em CHAR_POS
 		ret				# retorna
 		
 
@@ -327,11 +295,11 @@ ERASE:		# a1 = x, a2 = y
 		mul t1,t1,a2			# t1 = 320 * y
 		add t1,t1,a1 			# t1 = (320 * y) + x / adiciona x ao t1
 		add t0,t0,t1			# adiciona t1 ao t0
-		# t0 agora é nosso endereço do ponto na tela
+		# t0 agora Ã© nosso endereÃ§o do ponto na tela
 		
 		la t2, labirinto1		# carrega o endereco do labirinto1 em t2
 		addi t2, t2, 8			# ajusta o ponteiro para a imagem
-		# t0 é o nosso endereço, t2 é o ponteiro do fundo
+		# t0 Ã© o nosso endereÃ§o, t2 Ã© o ponteiro do fundo
 		add t2, t2, t1			# ajusta o ponteiro do fundo
 
 		li s1, 0			# contador de Y
@@ -342,16 +310,16 @@ ERASE:		# a1 = x, a2 = y
 		 li s2, 0                   # contador de X (colunas)
 			LOOP_X:			# loop para colunas
 				 lh t3, 0(t2)               # carrega a halfword de 4 pixels do fundo em t3
-  				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posição antiga
+  				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posiÃ§Ã£o antiga
     				 addi t2, t2, 1             # incrementa o endereco da imagem (fundo)
-    				 addi t0, t0, 1             # incrementa o endereco do bitmap (posição antiga)
+    				 addi t0, t0, 1             # incrementa o endereco do bitmap (posiÃ§Ã£o antiga)
     				 addi s2, s2, 1             # incrementa o contador de colunas
-        			 blt s2, s3, LOOP_X         # se não alcançou o limite de pixels, repete o loop de colunas
+        			 blt s2, s3, LOOP_X         # se nÃ£o alcanÃ§ou o limite de pixels, repete o loop de colunas
 				
 			LOOP_X_END: 
-			   addi t0, t0, 304           # move o endereço do bitmap para a próxima linha (320 bytes)
-  			  addi t2, t2, 304           # move o ponteiro do fundo para a próxima linha
+			   addi t0, t0, 304           # move o endereÃ§o do bitmap para a prÃ³xima linha (320 bytes)
+  			  addi t2, t2, 304           # move o ponteiro do fundo para a prÃ³xima linha
     			addi s1, s1, 1             # incrementa o contador de linhas
-    			blt s1, s3, LOOP_Y         # repete o loop de linhas até o limite (16 pixels)
+    			blt s1, s3, LOOP_Y         # repete o loop de linhas atÃ© o limite (16 pixels)
 		LOOP_Y_END: 
 		ret 				# retorna
