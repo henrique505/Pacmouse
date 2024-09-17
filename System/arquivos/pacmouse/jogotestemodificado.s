@@ -1,8 +1,5 @@
 .data
 
-#MUSICA
-.include "./arquivos .data/musica/der_erlkonig.data"
-
 #MAPAS
 .include "./arquivos .data/levels/level1/labirinto1hud.data"
 .include "./arquivos .data/levels/level2/labirinto2hud.data"
@@ -43,40 +40,64 @@
 .include "./arquivos .data/enemies/gatoassustadoA.data"
 .include "./arquivos .data/enemies/gatoassustadoD.data"
 
-# Define constantes para as direÃ§Ãµes
-LEFT:           .half 1         # valor da direÃ§Ã£o esquerda
-RIGHT:          .half 2         # valor da direÃ§Ã£o direita
-DOWN:           .half 3         # valor da direÃ§Ã£o baixo
-UP:             .half 4         # valor da direÃ§Ã£o cima
+# Define constantes para as direcoes
+LEFT:           .half 1         # valor da direcao esquerda
+RIGHT:          .half 2         # valor da direcao direita
+DOWN:           .half 3         # valor da direcao baixo
+UP:             .half 4         # valor da direcao cima
 
 # Dados do jogo
 PONTOS:        .word 0            # pontos atuais do jogador
 RECORDE:       .word 0            # recorde do jogador
 VIDAS:         .word 3            # vidas que o jogador tem
-VIDAS_POS:     .half 16, 208      # posiÃ§Ã£o onde printar a quantidade de vidas
-CURRENT_DIR:   .half 0            # direÃ§Ã£o atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
-WANTED_DIR:    .half 0            # direÃ§Ã£o desejada
+VIDAS_POS:     .half 16, 208      # posicao onde printar a quantidade de vidas
+CURRENT_DIR:   .half 0            # direcao atual (0 = parado, 1 = esquerda, 2 = direita, 3 = baixo, 4 = cima)
+WANTED_DIR:    .half 0            # direcao desejada
 
 CHAR_POS:      .half 176, 208     # x, y
 OLD_CHAR_POS:  .half 0, 0         # x, y
 
 # Dados musica
 Tamanho:			# Quantas notas serao tocadas
-.word 1000
+.word 365
+
 Notas:				# Array com o tom de cada nota
-.space 4096
+.word 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 55, 57, 58, 60, 62, 63, 62, 67, 67, 58, 67, 67, 55, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 55, 57, 58, 60, 62, 63, 62, 67,
+67, 58, 67, 67, 55, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 60, 67, 69, 67, 69, 67, 69, 67, 69, 61, 69, 67, 62, 67, 70, 67, 70, 67, 62, 66, 69, 66, 69, 66, 55, 67, 79, 67,
+79, 67, 79, 67, 79, 67, 79, 67, 55, 57, 58, 60, 62, 63, 62, 67, 79, 58, 67, 79, 55, 67, 79, 67, 79, 67, 79, 67, 79, 67, 79, 67, 55, 57, 58, 60, 62, 63, 62, 67, 79, 58, 67, 79,
+55, 67, 79, 67, 79, 67, 79, 67, 79, 67, 79, 67, 60, 67, 69, 67, 69, 67, 69, 67, 69, 67, 69, 67, 61, 67, 70, 67, 70, 67, 70, 67, 70, 61, 61, 61, 62, 66, 67, 69, 70, 73, 74, 62,
+62, 81, 62, 62, 82, 62, 70, 62, 70, 81, 62, 70, 79, 62, 70, 81, 66, 67, 69, 70, 73, 74, 62, 62, 81, 62, 62, 82, 62, 70, 62, 70, 79, 70, 62, 70, 62, 86, 66, 67, 69, 70, 73, 74,
+57, 66, 57, 66, 57, 57, 66, 57, 66, 57, 66, 57, 66, 57, 74, 57, 66, 74, 55, 65, 55, 65, 55, 65, 55, 65, 79, 55, 65, 79, 63, 72, 63, 72, 75, 60, 60, 72, 63, 63, 77, 62, 65, 62,
+65, 60, 63, 60, 67, 60, 60, 70, 60, 62, 63, 65, 66, 65, 64, 63, 70, 60, 59, 75, 58, 66, 58, 66, 58, 67, 67, 67, 69, 63, 58, 72, 60, 62, 70, 65, 66, 65, 64, 63, 70, 60, 59, 75,
+58, 66, 58, 66, 58, 67, 67, 67, 69, 63, 58, 72, 60, 62, 70, 65, 66, 65, 64, 63, 82, 60, 59, 86, 62, 64, 66, 67, 68, 69, 68, 67, 81, 64, 62, 82, 67, 69, 70, 67, 65, 63, 63, 65,
+79, 63, 62, 79, 62, 63, 62, 60, 78, 62, 61, 58, 57
+
 Duracao:			# Array com a duracao de cada nota correspondente
-.space 4096
+.word 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 250, 125, 125, 125, 125, 125, 125, 125, 250, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 250, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 250, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 250, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125, 125,
+125, 125, 125, 125, 125, 250, 125, 125, 125, 125, 250, 125, 125, 125, 125
+
 NotaAtual:			# Ponteiro para ambos nota e duracao
 .word 0
 Fim:				# Define quando a nota deve parar de tocar
 .word 0
-
 	
 .text
 SETUP:	
+		# armazena em 'Fim' a quantidade de milissegundos atual
+		li a7, 30
+		ecall
+		sw a0, Fim, t0
 			
-		la a0,labirinto1			# carrega o endereco do sprite 'labirinto1' em a0
+		la a0,labirinto1		# carrega o endereco do sprite 'labirinto1' em a0
 		li a1,0				# x = 0
 		li a2,0				# y = 0
 		li a3,0				# frame = 0
@@ -86,10 +107,6 @@ SETUP:
 		la a0, charD 			#carrega o chaD em a0 para aparecer na tela
 		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 		
-		# armazena em 'Fim' a quantidade de milissegundos atual
-		li a7, 30
-		ecall
-		sw a0, Fim, t0
 
 GAME_LOOP:	
 	MUSICA:	
@@ -107,8 +124,6 @@ GAME_LOOP:
 		lw	t0, NotaAtual		# ponteiro para as notas e duracoes
 		la	t1, Notas		# carrega o endereco das notas em t1
 		la	t2, Duracao		# carrega o endereco das duracoes em t2
-		li	t3, 4
-		mul	s7, s7, t3
 		
 		# carregar as informacoes nos ponteiros
 		add	t1, t1, t0	# t1 contem o endereco da nota atual
@@ -128,11 +143,11 @@ GAME_LOOP:
 		ecall
 		
 		# calcular quando eh o fim da nota que esta tocando
-		add	t6, a0, t2 			# t6 Ã© o comeÃ§o da nota + duracao
+		add	t6, a0, t2 			# t6 tem o comeco da nota + duracao
 		sw 	t6, Fim, s2			# armazena o valor em Fim	
 			
 		lw	s0, NotaAtual		# s0 eh como um contador para a nota atual
-		addi	s0, s0, 4		# incrementa 1 no contador (para ir Ã  prÃ³xima)
+		addi	s0, s0, 4		# incrementa 4 no contador (para ir para a proxima nota)
 		bge	s0, t4, loop		# se a musica terminou, volta pro inicio
 		j	jogo
 		loop:
@@ -165,11 +180,11 @@ GAME_LOOP:
 		j GAME_LOOP			# continua o loop
 
 KEY2:		li t1,0xFF200000		# carrega o endereco de controle do KDMMIO
-		lw t0,0(t1)			# lÃª o bit de controle do teclado
+		lw t0,0(t1)			# le o bit de controle do teclado
 		andi t0,t0,0x0001		# mascara o bit menos significativo
-   		beq t0,zero,FIM   		# se nÃ£o hÃ¡ tecla pressionada, vai para FIM
+   		beq t0,zero,FIM   		# se nao ha tecla pressionada, vai para FIM
   		
-  		lw t2,4(t1)  			# lÃª o valor da tecla pressionada
+  		lw t2,4(t1)  			# le o valor da tecla pressionada
 		
 		li t0,'w'			# carrega 'w' em t0
 		beq t2,t0,CHAR_CIMA		# se tecla pressionada for 'w', chama CHAR_CIMA
@@ -187,19 +202,19 @@ FIM:		ret				# retorna
 
 CHAR_ESQ:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
-		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posicao atual do personagem em t2
+		sw t2,0(t1)			# salva a posicao atual do personagem em OLD_CHAR_POS
 		
 		lh t1,0(t0)			# carrega o x atual do personagem
 		addi t1,t1,-16			# decrementa 16 pixels
-		sh t1,0(t0)			# salva a nova posiÃ§Ã£o x em CHAR_POS
+		sh t1,0(t0)			# salva a nova posicao x em CHAR_POS
 		la a0, char			# carrega o endereco do sprite 'char' em a0
 		ret				# retorna
 
 CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
 		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
-		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
+		sw t2,0(t1)			# salva a posicao atual do personagem em OLD_CHAR_POS
 		
 		lh t2, 0(t0)                # carrega o x atual do personagem
         	addi t2, t2, 16             # incrementa 16 pixels
@@ -209,8 +224,8 @@ CHAR_DIR:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 
 CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
-		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posicao atual do personagem em t2
+		sw t2,0(t1)			# salva a posicao atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
@@ -220,8 +235,8 @@ CHAR_CIMA:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 
 CHAR_BAIXO:	la t0,CHAR_POS			# carrega em t0 o endereco de CHAR_POS
 		la t1,OLD_CHAR_POS		# carrega em t1 o endereco de OLD_CHAR_POS
-		lw t2,0(t0)			# carrega a posiÃ§Ã£o atual do personagem em t2
-		sw t2,0(t1)			# salva a posiÃ§Ã£o atual do personagem em OLD_CHAR_POS
+		lw t2,0(t0)			# carrega a posicao atual do personagem em t2
+		sw t2,0(t1)			# salva a posicao atual do personagem em OLD_CHAR_POS
 		
 		la t0,CHAR_POS
 		lh t1,2(t0)			# carrega o y atual do personagem
@@ -295,11 +310,11 @@ ERASE:		# a1 = x, a2 = y
 		mul t1,t1,a2			# t1 = 320 * y
 		add t1,t1,a1 			# t1 = (320 * y) + x / adiciona x ao t1
 		add t0,t0,t1			# adiciona t1 ao t0
-		# t0 agora Ã© nosso endereÃ§o do ponto na tela
+		# t0 agora eh nosso endereco do ponto na tela
 		
 		la t2, labirinto1		# carrega o endereco do labirinto1 em t2
 		addi t2, t2, 8			# ajusta o ponteiro para a imagem
-		# t0 Ã© o nosso endereÃ§o, t2 Ã© o ponteiro do fundo
+		# t0 eh o nosso enderecoo, t2 eh o ponteiro do fundo
 		add t2, t2, t1			# ajusta o ponteiro do fundo
 
 		li s1, 0			# contador de Y
@@ -310,16 +325,16 @@ ERASE:		# a1 = x, a2 = y
 		 li s2, 0                   # contador de X (colunas)
 			LOOP_X:			# loop para colunas
 				 lh t3, 0(t2)               # carrega a halfword de 4 pixels do fundo em t3
-  				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posiÃ§Ã£o antiga
+  				 sh t3, 0(t0)               # escreve os 4 pixels no bitmap na posicao antiga
     				 addi t2, t2, 1             # incrementa o endereco da imagem (fundo)
-    				 addi t0, t0, 1             # incrementa o endereco do bitmap (posiÃ§Ã£o antiga)
+    				 addi t0, t0, 1             # incrementa o endereco do bitmap (posicao antiga)
     				 addi s2, s2, 1             # incrementa o contador de colunas
-        			 blt s2, s3, LOOP_X         # se nÃ£o alcanÃ§ou o limite de pixels, repete o loop de colunas
+        			 blt s2, s3, LOOP_X         # se nao alcancou o limite de pixels, repete o loop de colunas
 				
 			LOOP_X_END: 
-			   addi t0, t0, 304           # move o endereÃ§o do bitmap para a prÃ³xima linha (320 bytes)
-  			  addi t2, t2, 304           # move o ponteiro do fundo para a prÃ³xima linha
+			   addi t0, t0, 304           # move o endereco do bitmap para a proxima linha (320 bytes)
+  			  addi t2, t2, 304           # move o ponteiro do fundo para a proxima linha
     			addi s1, s1, 1             # incrementa o contador de linhas
-    			blt s1, s3, LOOP_Y         # repete o loop de linhas atÃ© o limite (16 pixels)
+    			blt s1, s3, LOOP_Y         # repete o loop de linhas ate o limite (16 pixels)
 		LOOP_Y_END: 
 		ret 				# retorna
