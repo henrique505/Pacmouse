@@ -1,15 +1,15 @@
-#########################################################
-#						        #
-# Universidade de Brasilia			        #
-# Instituto de Ciencias Exatas			        #
-# Departamento de Ciencia da Computacao		       	#
-# Introducao aos Sistemas Computacionais - 2024.1	#
-# Professor: Marcus Vinicius Lamar			#
-# Alunos: Gabriel Alexandre, Henrique Almeida e Nyvea   #
-# Paulla Tavares				   	#
-# Nome do jogo: Pacmouse				#
-#							#
-#########################################################
+#################################################################	
+#							        #
+#	Universidade de Brasilia				#
+# 	Instituto de Ciencias Exatas		       		#
+# 	Departamento de Ciencia da Computacao	       		#
+# 	Introducao aos Sistemas Computacionais - 2024.1		#
+# 	Professor: Marcus Vinicius Lamar			#
+# 	Alunos: Gabriel Alexandre, Henrique Almeida e Nyvea     #
+# 	Paulla Tavares				   		#
+# 	Jogo: Pacmouse						#
+#								#
+#################################################################
 .data
 
 #MAPAS
