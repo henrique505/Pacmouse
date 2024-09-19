@@ -167,7 +167,25 @@ GAME_LOOP:
 		lh a1,0(t0)			# carrega a posicao x do personagem em a1
 		lh a2,2(t0)			# carrega a posicao y do personagem em a2
 
+		# Verificação de coordenadas
+		li t3,48			# carrega 48 em t3
+		li t4,112			# carrega 112 em t4
+		beq a1,t3,CHECK_Y_48		# verifica se x == 48, se sim, vai para CHECK_Y_48
+		j CHECK_304			# se não, vai para CHECK_304
 
+CHECK_Y_48:
+		beq a2,t4,INVERT_TO_304		# verifica se y == 112, se sim, inverte para 304
+		j CONTINUE_LOOP			# se não, continua o loop
+
+CHECK_304:
+		li t3,304			# carrega 304 em t3
+		beq a1,t3,CHECK_Y_304		# verifica se x == 304, se sim, vai para CHECK_Y_304
+		j CONTINUE_LOOP			# se não, continua o loop
+
+CHECK_Y_304:
+		beq a2,t4,INVERT_TO_48		# verifica se y == 112, se sim, inverte para 48
+
+CONTINUE_LOOP:
 		mv a3,s0			# carrega o valor do frame em a3
 		call PRINT			# imprime o sprite
 		
@@ -180,6 +198,22 @@ GAME_LOOP:
 		sw s0,0(t0)			# mostra o sprite pronto para o usuario
 		
 		j GAME_LOOP			# continua o loop
+
+		INVERT_TO_304:
+		li a1,304			# carrega 304 em a1
+		sh a1,0(t0)			# atualiza a posição x para 304
+		li t3,16			# carrega 16 em t3
+		sub a1,a1,t3			# move um quadrado para trás (304 - 16)
+		sh a1,0(t0)			# atualiza a posição x para 288
+		j CONTINUE_LOOP			# continua o loop
+
+		INVERT_TO_48:
+		li a1,48			# carrega 48 em a1
+		sh a1,0(t0)			# atualiza a posição x para 48
+		li t3,16			# carrega 16 em t3
+		add a1,a1,t3			# move um quadrado para frente (48 + 16)
+		sh a1,0(t0)			# atualiza a posição x para 64
+		j CONTINUE_LOOP			# continua o loop
 
 KEY2:		li t1,0xFF200000		# carrega o endereco de controle do KDMMIO
 		lw t0,0(t1)			# le o bit de controle do teclado
