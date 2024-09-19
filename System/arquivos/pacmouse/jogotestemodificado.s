@@ -107,7 +107,7 @@ SETUP:
 		li a2,0				# y = 0
 		li a3,1				# frame = 1
 		call PRINT			# imprime o sprite
-		la a4, charD 			#carrega o chaD em a4 para aparecer na tela
+		la a4, charD 			#carrega o chaD em a4 para aparecer na tela		
 		# esse setup serve pra desenhar o fundo nos dois frames antes do "jogo" comecar
 		
 GAME_LOOP:	
@@ -138,7 +138,7 @@ GAME_LOOP:
 		mv	a0, t1 		# move a tonalidade para a0
 		mv	a1, t2 		# move a duracao para a1
 		li	a2, 1 		# define instrumento 
-		li	a3, 127 	# volume
+		li	a3, 100 	# volume
 		ecall
 	
 		li	a7, 30		# pega o tempo atual em milissegundos
@@ -148,14 +148,14 @@ GAME_LOOP:
 		add	t6, a0, t2 			# t6 tem o comeco da nota + duracao
 		sw 	t6, Fim, s2			# armazena o valor em Fim	
 			
-		lw	s0, NotaAtual		# s0 eh como um contador para a nota atual
-		addi	s0, s0, 4		# incrementa 4 no contador (para ir para a proxima nota)
-		bge	s0, t4, loop		# se a musica terminou, volta pro inicio
+		lw	s3, NotaAtual		# s0 eh como um contador para a nota atual
+		addi	s3, s3, 4		# incrementa 4 no contador (para ir para a proxima nota)
+		bge	s3, t4, loop		# se a musica terminou, volta pro inicio
 		j	jogo
 		loop:
-			li	s0, 0			# resseta o contador
+			li	s3, 0			# resseta o contador
 		jogo:
-			sw	s0, NotaAtual, s1	# novo valor no ponteiro para o arquivo na memoria
+			sw	s3, NotaAtual, s1	# novo valor no ponteiro para o arquivo na memoria
 		
 	NAO_ACABOU:
 		call KEY2			# chama o procedimento de entrada do teclado
